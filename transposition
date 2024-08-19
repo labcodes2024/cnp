@@ -1,0 +1,72 @@
+//Encryption
+#include<stdio.h>
+#include<string.h>
+#include<ctype.h>
+
+int main() {
+    char seq[36] = "qwertyuiopasdfghjklzxcvbnm1234567890";
+    char data[50];
+    char encoded[50];
+    int i, len;
+
+    printf("\nEnter data: ");
+    fgets(data, 50, stdin);
+    len = strlen(data);
+    
+    for (i = 0; i < len; i++) {
+        if (isupper(data[i])) {
+            encoded[i] = seq[data[i] - 'A'];
+        } else if (islower(data[i])) {
+            encoded[i] = toupper(seq[data[i] - 'a']);
+        } else if (isdigit(data[i])) {
+            encoded[i] = seq[data[i] - '0' + 26];
+        } else {
+            encoded[i] = data[i];
+        }
+    }
+    
+    encoded[len - 1] = '\0';  // Remove newline character from fgets
+    printf("\nEncoded string is: %s\n", encoded);
+
+    return 0;
+}
+
+//Decryption
+#include<stdio.h>
+#include<string.h>
+#include<ctype.h>
+
+int main() {
+    char seq[36] = "qwertyuiopasdfghjklzxcvbnm1234567890";
+    char data[100];
+    char decoded[100];
+    int i, j, len, present = 0;
+
+    printf("\nEnter data: ");
+    fgets(data, 100, stdin);
+    len = strlen(data);
+    
+    for (i = 0; i < len; i++) {
+        present = 0;  // Reset the flag for each character
+        for (j = 0; j < 36 && !present; ++j) {
+            if (tolower(data[i]) == seq[j]) {
+                if (isupper(data[i])) {
+                    decoded[i] = 'A' + j;
+                } else if (islower(data[i])) {
+                    decoded[i] = 'a' + j;
+                } else {
+                    decoded[i] = '0' + (j - 26);
+                }
+                present = 1;
+            }
+        }
+        if (!present) {
+            decoded[i] = data[i];
+        }
+    }
+
+    decoded[len - 1] = '\0';  // Remove newline character from fgets
+    printf("\nDecoded string is: %s\n", decoded);
+
+    return 0;
+}
