@@ -1,0 +1,98 @@
+//Encryption
+#include<stdio.h>
+#include<string.h>
+
+int main() {
+    char data[100];
+    char wrd[] = "MEGABUCK";
+    char cipher[20][8] = {{0}};
+    int seq[8];
+    int i, j, k, cnt;
+
+    // Determine the sequence based on the word
+    for (i = 0; i < strlen(wrd); i++) {
+        cnt = 0;
+        for (j = 0; j < 8; j++)
+            if (wrd[i] > wrd[j])
+                ++cnt;
+        seq[i] = cnt;
+    }
+
+    printf("\nEnter data: ");
+    fgets(data, 100, stdin);
+    cnt = strlen(data);
+    if (data[cnt - 1] == '\n') data[--cnt] = '\0'; // Remove newline character
+
+    // Fill cipher matrix
+    for (i = 0; i < cnt; i++)
+        cipher[i / 8][i % 8] = data[i];
+
+    // Fill remaining spaces with padding character '.'
+    if (i % 8 != 0) {
+        for (j = i % 8; j < 8; j++) {
+            cipher[i / 8][j] = '.';
+            cnt++;
+        }
+    }
+
+    printf("\nEncrypted data:\n");
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 8; j++) {
+            if (seq[j] == i) break;
+        }
+        for (k = 0; k < cnt / 8; k++) {
+            printf("%c", cipher[k][j]);
+        }
+    }
+
+    return 0;
+}
+
+//Decryption
+#include<stdio.h>
+#include<string.h>
+
+int main() {
+    char data[100];
+    char wrd[] = "MEGABUCK";
+    char cipher[20][8] = {{0}};
+    int seq[8];
+    int i, j, c, cnt;
+
+    // Determine the sequence based on the word
+    for (i = 0; i < strlen(wrd); i++) {
+        cnt = 0;
+        for (j = 0; j < strlen(wrd); j++) {
+            if (wrd[i] > wrd[j]) ++cnt;
+        }
+        seq[i] = cnt;
+    }
+
+    printf("\nEnter encrypted data: ");
+    fgets(data, 100, stdin);
+    cnt = strlen(data);
+    if (data[cnt - 1] == '\n') data[--cnt] = '\0'; // Remove newline character
+
+    if (cnt % 8 != 0) {
+        printf("\nError: Invalid Input\n");
+    } else {
+        // Fill cipher matrix based on sequence
+        for (i = 0; i < 8; i++) {
+            for (c = 0; c < 8; c++) {
+                if (seq[c] == i) break;
+            }
+            for (j = 0; j < cnt / 8; j++) {
+                cipher[j][c] = data[i * (cnt / 8) + j];
+            }
+        }
+
+        printf("Decrypted data:\n");
+        for (i = 0; i < cnt; i++) {
+            if (cipher[i / 8][i % 8] == '.') break;
+            printf("%c", cipher[i / 8][i % 8]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
